@@ -5,6 +5,8 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -14,38 +16,71 @@ import android.widget.TextView;
 
 public class HelloAndroidActivity extends Activity {
 	private WifiManager wifiManager;
-	
-    /** Called when the activity is first created. */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        wifiManager = (WifiManager)getSystemService(Context.WIFI_SERVICE);
-        
-        Button readLocatoinButton = (Button) findViewById(R.id.read_location_button);
-        readLocatoinButton.setOnClickListener(new View.OnClickListener() {
-			
+	private WifiScanReceiver receiver;
+
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
+
+		wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+
+		Button readLocatoinButton = (Button) findViewById(R.id.read_location_button);
+		readLocatoinButton.setOnClickListener(new View.OnClickListener() {
+
 			public void onClick(View v) {
-				TextView text = (TextView) findViewById(R.id.log_text);
-				String out = "";
-				out += "Recorded at " + new Date() + "\n";
-				out += "Wifi: \n";
-				out += "enabled: " + wifiManager.isWifiEnabled() + "\n";
-				out += "scan results:\n";
-				List<ScanResult> results = wifiManager.getScanResults();
-				for(ScanResult result : results) {
-					out += "  BSSID: " + result.BSSID + "\n";
-					out += "  SSID: " + result.SSID + "\n";
-					out += "  capabilities: " + result.capabilities + "\n";
-					out += "  frequency: " + result.frequency + "\n";
-					out += "  level: " + result.level + "\n";
-					out += "  -----\n";
-				}
-				out += "----------\n";
-				text.append(out);
+				addScanResult();
 			}
 		});
 
-    }
+		receiver = new WifiScanReceiver();
+		registerReceiver(receiver, new IntentFilter(
+				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	}
+
+	public void onSaveHomeBssid(View view) {
+		TextView text = (TextView) findViewById(R.id.home_bssid_text);
+		Interpreter.getInstance().setHomeBssid(text.getText());
+		Interpreter.getInstance().setHomeStatusReceiver(this);
+	}
+
+	public void addScanResult() {
+		receiver.forceUpdate(this);
+		TextView text = (TextView) findViewById(R.id.log_text);
+		String out = "";
+		out += "Recorded at " + new Date() + "\n";
+		out += "Wifi: \n";
+		out += "enabled: " + wifiManager.isWifiEnabled() + "\n";
+		out += "scan results:\n";
+		List<ScanResult> results = wifiManager.getScanResults();
+		if(results == null) {
+			out += "  no results\n";
+		} else {
+			for (ScanResult result : results) {
+				out += "  BSSID: " + result.BSSID + "\n";
+				out += "  SSID: " + result.SSID + "\n";
+				out += "  capabilities: " + result.capabilities + "\n";
+				out += "  frequency: " + result.frequency + "\n";
+				out += "  level: " + result.level + "\n";
+				out += "  -----\n";
+			}
+		}
+		out += "----------\n";
+		text.append(out);
+	}
+
+	public void notifyBackToHome() {
+		TextView text = (TextView) findViewById(R.id.home_status_text);
+		text.setText("Here");
+		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+	}
+
+	public void notifyHomeIsAway() {
+		TextView text = (TextView) findViewById(R.id.home_status_text);
+		text.setText("Away");
+		AudioManager audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		audio.setRingerMode(AudioManager.RINGER_MODE_VIBRATE);
+	}
 }
