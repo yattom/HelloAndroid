@@ -1,5 +1,8 @@
 package jp.yattom.research.android.hello;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class Interpreter {
@@ -14,6 +17,15 @@ public class Interpreter {
 
 	private Interpreter() {
 
+	}
+
+	public void recordNewWhereabout(Context context, Whereabout target) {
+		SharedPreferences prefs = context.getSharedPreferences("Whereabouts", Context.MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		for(String bssid : target.bssids()) {
+			editor.putString(bssid, target.name());
+		}
+		editor.commit();
 	}
 
 	public void notifyBssidLost(String bssid) {

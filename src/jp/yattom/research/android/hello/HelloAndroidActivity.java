@@ -33,6 +33,27 @@ public class HelloAndroidActivity extends Activity {
 				addScanResult();
 			}
 		});
+		
+		Button addStationButton = (Button) findViewById(R.id.add_metro_station_button);
+		addStationButton.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				String line = ((TextView)findViewById(R.id.metro_line_text)).getText().toString();
+				String station = ((TextView)findViewById(R.id.metro_station_text)).getText().toString();
+
+				List<ScanResult> results = wifiManager.getScanResults();
+				if(results == null) {
+					return;
+				}
+				String[] bssids = new String[results.size()];
+				for (int i = 0; i < bssids.length; i++) {
+					bssids[i] = results.get(i).BSSID;
+				}
+				
+				Whereabout metroStationHome = new MetroStationHomeWhereabout(line, station, bssids);
+				Interpreter.getInstance().recordNewWhereabout(HelloAndroidActivity.this, metroStationHome);
+			}
+		});
 
 		receiver = new WifiScanReceiver();
 		registerReceiver(receiver, new IntentFilter(
