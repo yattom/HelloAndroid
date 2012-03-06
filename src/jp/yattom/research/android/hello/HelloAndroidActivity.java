@@ -62,6 +62,7 @@ public class HelloAndroidActivity extends Activity {
 			public void onClick(View v) {
 				TextView text = (TextView) findViewById(R.id.log_text);
 				String out = "";
+				out += "Dumped stored Whereabouts at " + new Date() + "\n";
 				SharedPreferences prefs = getSharedPreferences("Whereabouts", MODE_PRIVATE);
 				Map<String, ?> all = prefs.getAll();
 				for(String key : all.keySet()) {
