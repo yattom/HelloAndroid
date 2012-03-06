@@ -8,5 +8,6 @@
     <string name="metro_line_name">Line</string>
     <string name="metro_station_name">Station</string>
     <string name="add_metro_station_name">Add Station</string>
+    <string name="show_stations_button">Show Stations</string>
 
 </resources>

@@ -99,12 +99,27 @@
         </LinearLayout>
         
     </LinearLayout>
-
-    <Button
-        android:id="@+id/add_metro_station_button"
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/add_metro_station_name" />
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/add_metro_station_button"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/add_metro_station_name" />
+
+        <Button
+            android:id="@+id/show_metro_stations_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/show_stations_button" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/read_location_button"
