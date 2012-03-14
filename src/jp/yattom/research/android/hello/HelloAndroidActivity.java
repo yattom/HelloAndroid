@@ -32,7 +32,7 @@ public class HelloAndroidActivity extends Activity {
 		readLocatoinButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View v) {
-				addScanResult();
+				addScanResult(null);
 			}
 		});
 		
@@ -84,11 +84,14 @@ public class HelloAndroidActivity extends Activity {
 		Interpreter.getInstance().setHomeStatusReceiver(this);
 	}
 
-	public void addScanResult() {
+	public void addScanResult(String caller) {
 		receiver.forceUpdate(this);
 		TextView text = (TextView) findViewById(R.id.log_text);
 		String out = "";
 		out += "Recorded at " + new Date() + "\n";
+		if(caller != null) {
+			out += "  requested from " + caller + "\n";
+		}
 		out += "Wifi: \n";
 		out += "enabled: " + wifiManager.isWifiEnabled() + "\n";
 		out += "scan results:\n";
