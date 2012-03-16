@@ -6,7 +6,6 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.net.wifi.ScanResult;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 public class HelloAndroidActivity extends Activity {
 	private WifiManager wifiManager;
-	private WifiScanReceiver receiver;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -72,10 +70,6 @@ public class HelloAndroidActivity extends Activity {
 				text.append(out);
 			}
 		});
-
-		receiver = new WifiScanReceiver();
-		registerReceiver(receiver, new IntentFilter(
-				WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
 
 	public void onSaveHomeBssid(View view) {
@@ -85,7 +79,6 @@ public class HelloAndroidActivity extends Activity {
 	}
 
 	public void addScanResult(String caller) {
-		receiver.forceUpdate(this);
 		TextView text = (TextView) findViewById(R.id.log_text);
 		String out = "";
 		out += "Recorded at " + new Date() + "\n";

@@ -14,15 +14,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
 import android.util.Log;
 
 public class WifiScanReceiver extends BroadcastReceiver {
 	static final public String TAG = "WifiScanReceiver";
-	private List<String> activeBssids;
+	private List<String> activeBssids = new ArrayList<String>();
 
 	public WifiScanReceiver() {
-		activeBssids = new ArrayList<String>();
 	}
 
 	@Override
